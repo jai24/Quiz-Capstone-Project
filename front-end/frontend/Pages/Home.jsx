@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Css/Home.css';
+import { login } from '../services/auth';
 
 const Home = () => {
 
@@ -24,11 +25,13 @@ const Home = () => {
             setValue({...value, [e.target.value] : e.target.value })
     }
 
-    function handleSubmit(){
+    async function  handleSubmit(){
         e.preventDefault()
             try{
-                if(!value.name)
-                    setError("Name is not valid")
+               if(visiblity === 'Log In'){
+                    const {email, password} = value;
+                    const response = await login({email,password})
+               }
                 
             }catch(error){
                 console.log("Error")
@@ -50,7 +53,7 @@ const Home = () => {
                     >Log In</button>
                 </div>
                 <div className="value-box">
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={(visiblity)=>handleSubmit}>
                         {visiblity === 'Log In' ? <></> : <label htmlFor="name"> Name
                             <input type="text" onChange={handleChange} placeholder={error} name="name" id="name" />
                         </label>}
