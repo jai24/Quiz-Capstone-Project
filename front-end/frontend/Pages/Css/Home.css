@@ -88,6 +88,7 @@ label > input{
     border-top-left-radius: 10px;
     border-width: 0.5px;
     height: 30px;
+    padding-left: 4px;
 }
 
 .submit-button{
