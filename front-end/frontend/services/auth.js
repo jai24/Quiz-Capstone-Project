@@ -1,41 +1,43 @@
 import { BACKEND_URL } from "./constant";
-
+import axios from 'axios';
 
 
 export function login({email, password}){
 
         try{
-            const response = axios.post(`${BACKEND_URL}/login`,{
+            const response = axios.post(`${BACKEND_URL}/auth/login`,{
                 email,
                 password
             },{
-                Headers: {
+                headers: {
                     'Content-Type' :'application/x-www-form-urlencoded'
                 }
             })
             return response;
         }   
         catch(error){
-
+            console.log(error)
+            throw error;
         } 
 }
 
-export function login({name, email, password, password2}){
+export function signup({name, email, password, password2}){
 
     try{
-        const response = axios.post(`${BACKEND_URL}/signup`,{
+        const response = axios.post(`${BACKEND_URL}/auth/register`,{
             name,
             email,
             password,
             password2
         },{
-            Headers: {
+            headers: {
                 'Content-Type' :'application/x-www-form-urlencoded'
             }
         })
         return response;
     }   
     catch(error){
-
+            console.log(error)
+            throw error;
     } 
 }
