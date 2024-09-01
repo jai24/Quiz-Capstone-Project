@@ -1,64 +1,9 @@
 import React, { useState } from 'react';
 import './Css/Popup.css';
 
-export function Popup({ togglePopup }) {
-    const [type, setType] = useState('');  // Check if Button is selected as Q&A or Poll
-    const [quizName, setQuizName] = useState('');  // Store the name of the quiz
-    const [error, setError] = useState('Quiz Name');  // Error if the quiz name is null
-    const [quizPopup, setQuizPopup] = useState(false);  // Set up the Poll popup component
-
-    const handlePopup = () => {  // Trigger the popup event
-        setQuizPopup(!quizPopup);
-        if (quizPopup) {
-            togglePopup();
-        }
-    };
-
-    const handleTypeSelection = (type) => {
-        setType(type);
-    };
-
-    const handleChange = (e) => {
-        setQuizName(e.target.value);
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (!quizName) {
-            setError('*Please enter the quiz name');
-            return;
-        }
-        handlePopup();
-    };
-
-    return (
-        <>
-            <div className="popup-container">
-                <div className="popup-style">
-                    <form>
-                        <input type="text" autoComplete='off' className="quiz-name" onChange={handleChange} name='name' value={quizName} placeholder={error} />
-                        <div className='poll-button'>
-                            <span style={{ color: '#9F9F9F' }}>Quiz Type</span>
-                            <button type="button" className={type === 'Q & A' ? 'selected' : ''}
-                                onClick={() => handleTypeSelection('Q & A')}> Q & A </button>
-                            <button type="button" className={type === 'Poll Type' ? 'selected' : ''}
-                                onClick={() => handleTypeSelection('Poll Type')}>Poll Type</button>
-                        </div>
-                        <div className='action-button'>
-                            <button onClick={togglePopup}>Close</button>
-                            <button onClick={handleSubmit}>Continue</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            {quizPopup && <QuizPopup handlePopup={handlePopup} />}
-        </>
-    );
-};
-
-
 export function QuizPopup({ handlePopup }) {
     const [pages, setPages] = useState([{ id: 1, content: "Page 1 content" }]);
+    const [quizName, setQuizName] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedOptionType, setSelectedOptionType] = useState('Text'); // For the option type (Text, Image-URL, etc.)
     const [selectedAnswer, setSelectedAnswer] = useState(''); // For the selected quiz answer
@@ -101,6 +46,7 @@ export function QuizPopup({ handlePopup }) {
 
     const handleAnswerSelection = (e) => {
         setSelectedAnswer(e.target.name);
+        setQuizName(e.target.value); // storing the quiz question
     };
 
     const handleOptionChange = (e) => {
@@ -110,9 +56,12 @@ export function QuizPopup({ handlePopup }) {
         });
     };
 
-    const handleSubmit = ()=>{
-        
-    }
+    const handleSubmit = (e) => {
+        e.preventDefault(); // Prevents the page from reloading
+        console.log(selectedAnswer, options, quizName);
+        // You can now handle the form submission logic here
+    };
+
     return (
         <>
             <div className="quiz-popup-container">
@@ -138,8 +87,13 @@ export function QuizPopup({ handlePopup }) {
                         <span className='max-q'>Max 5 questions</span>
                     </div>
                     <div className="page-content">
-                        <form>
-                            <input type="text" className="ques-field" placeholder="Poll Question" />
+                        <form onSubmit={handleSubmit}>
+                            <input
+                                type="text"
+                                className="ques-field"
+                                onChange={handleAnswerSelection}
+                                placeholder="Poll Question"
+                            />
                             <div className='radio'>
                                 <span>Option Type</span>
                                 <input
@@ -173,73 +127,70 @@ export function QuizPopup({ handlePopup }) {
                                 <label htmlFor="Image-and-URL">Text & Image URL</label>
                             </div>
                         
-                        <div className='input-field'>
-                            <div>
-                                <input
-                                    type="radio"
-                                    name="option1"
-                                    value="option1"
-                                    checked={selectedAnswer === 'option1'}
-                                    onChange={handleAnswerSelection}
-                                />
-                                <label>
+                            <div className='input-field'>
+                                <div>
                                     <input
-                                        type="text"
+                                        type="radio"
                                         name="option1"
-                                        value={options.option1}
-                                        onChange={handleOptionChange}
-                                        placeholder="Enter option 1"
+                                        value="option1"
+                                        checked={selectedAnswer === 'option1'}
+                                        onChange={handleAnswerSelection}
                                     />
-                                </label>
-                            </div>
-                            <div>
-                                <input
-                                    type="radio"
-                                    name="option2"
-                                    value="option2"
-                                    checked={selectedAnswer === 'option2'}
-                                    onChange={handleAnswerSelection}
-                                />
-                                <label>
+                                    <label>
+                                        <input
+                                            type="text"
+                                            name="option1"
+                                            value={options.option1}
+                                            onChange={handleOptionChange}
+                                            placeholder="Enter option 1"
+                                        />
+                                    </label>
+                                </div>
+                                <div>
                                     <input
-                                        type="text"
+                                        type="radio"
                                         name="option2"
-                                        value={options.option2}
-                                        onChange={handleOptionChange}
-                                        placeholder="Enter option 2"
+                                        value="option2"
+                                        checked={selectedAnswer === 'option2'}
+                                        onChange={handleAnswerSelection}
                                     />
-                                </label>
-                            </div>
-                            <div>
-                                <input
-                                    type="radio"
-                                    name="option3"
-                                    value="option3"
-                                    checked={selectedAnswer === 'option3'}
-                                    onChange={handleAnswerSelection}
-                                />
-                                <label>
+                                    <label>
+                                        <input
+                                            type="text"
+                                            name="option2"
+                                            value={options.option2}
+                                            onChange={handleOptionChange}
+                                            placeholder="Enter option 2"
+                                        />
+                                    </label>
+                                </div>
+                                <div>
                                     <input
-                                        type="text"
+                                        type="radio"
                                         name="option3"
-                                        value={options.option3}
-                                        onChange={handleOptionChange}
-                                        placeholder="Enter option 3"
+                                        value="option3"
+                                        checked={selectedAnswer === 'option3'}
+                                        onChange={handleAnswerSelection}
                                     />
-                                </label>
+                                    <label>
+                                        <input
+                                            type="text"
+                                            name="option3"
+                                            value={options.option3}
+                                            onChange={handleOptionChange}
+                                            placeholder="Enter option 3"
+                                        />
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div className='action-button'>
-                        <button onClick={handlePopup}>Close</button>
-                        <button onClick={handleSubmit}>Submit</button>
-                    </div>
+                            <div className='action-button'>
+                                <button type="button" onClick={handlePopup}>Close</button>
+                                <button type="submit">Submit</button>
+                            </div>
                         </form>
                     </div>
-                    
-                   
                 </div>
             </div>
         </>
     );
 }
-

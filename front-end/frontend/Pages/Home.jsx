@@ -144,9 +144,10 @@ const Home = () => {
                 const response = await signup({ name, email, password, password2 });
                 console.log(response)
                 if (response.status === 201) {
-                   alert("User created successfully");
+                   toast.success("User created successfully");
                     setValue({ name: '', email: '', password: '', password2: '' });
                 } else {
+                    toast.error("Something went wrong try again")
                     setError("An error occurred during sign-up.");
                 }
             }
@@ -154,13 +155,16 @@ const Home = () => {
             if (visiblity === 'Log In') {
                 const response = await login({ email, password });
                 if (response.status === 201) {
+                    toast.success("Log in sucessul")
                     navigate("/Dashboard");
                 } else {
+                    
                     setError("Invalid login credentials");
                 }
             }
         } catch (error) {
             console.log("Error", error);
+            toast.error("Something went wrong try again")
             setError("An error occurred. Please try again later.");
         }
     }
