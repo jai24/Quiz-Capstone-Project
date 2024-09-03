@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import './Css/Popup.css';
 
 export function QuizPopup({ handlePopup }) {
-    const [pages, setPages] = useState([{ id: 1, content: "Page 1 content" }]);
+    const [pages, setPages] = useState([{ id: 1 }]);
     const [quizName, setQuizName] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedOptionType, setSelectedOptionType] = useState('Text'); // For the option type (Text, Image-URL, etc.)
-    const [selectedAnswer, setSelectedAnswer] = useState(''); // For the selected quiz answer
+    const [selectedOptionType, setSelectedOptionType] = useState('Text');
+    const [selectedAnswer, setSelectedAnswer] = useState('');
     const [options, setOptions] = useState({
         option1: '',
         option2: '',
@@ -19,7 +19,7 @@ export function QuizPopup({ handlePopup }) {
             return;
         }
         const newPageId = pages.length + 1;
-        setPages([...pages, { id: newPageId, content: `Page ${newPageId} content` }]);
+        setPages([...pages, { id: newPageId }]);
         setCurrentPage(newPageId);
     };
 
@@ -46,7 +46,6 @@ export function QuizPopup({ handlePopup }) {
 
     const handleAnswerSelection = (e) => {
         setSelectedAnswer(e.target.name);
-        setQuizName(e.target.value); // storing the quiz question
     };
 
     const handleOptionChange = (e) => {
@@ -56,12 +55,16 @@ export function QuizPopup({ handlePopup }) {
         });
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault(); // Prevents the page from reloading
+    const handleFormSubmit = (e) => {
+            e.preventDefault();
+    try{
+        console.log("Submit button clicked"); 
         console.log(selectedAnswer, options, quizName);
-        // You can now handle the form submission logic here
+        alert('Form sumitted')
+    }catch(error){
+            console.log(error.message)
     };
-
+}
     return (
         <>
             <div className="quiz-popup-container">
@@ -75,7 +78,7 @@ export function QuizPopup({ handlePopup }) {
                                 >
                                     {page.id}
                                     <span className="close-button" onClick={(e) => {
-                                        e.stopPropagation(); 
+                                        e.stopPropagation();
                                         removePage(page.id);
                                     }}>
                                         &times;
@@ -87,11 +90,11 @@ export function QuizPopup({ handlePopup }) {
                         <span className='max-q'>Max 5 questions</span>
                     </div>
                     <div className="page-content">
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={handleFormSubmit}>
                             <input
                                 type="text"
                                 className="ques-field"
-                                onChange={handleAnswerSelection}
+                                onChange={(e) => setQuizName(e.target.value)}
                                 placeholder="Poll Question"
                             />
                             <div className='radio'>
