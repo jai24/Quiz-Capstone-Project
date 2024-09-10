@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import './Css/Popup.css';
+import '../Pages/Css/Popup.css';
+import { quizData } from '../services/quizData';
 
-export function QuizPopup({ handlePopup }) {
+export function QuizPopup({ handlePopup, quizType }) {
     const [pages, setPages] = useState([{ id: 1 }]);
-    const [quizName, setQuizName] = useState('');
+    const [question, setQuestion] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedOptionType, setSelectedOptionType] = useState('Text');
     const [selectedAnswer, setSelectedAnswer] = useState('');
@@ -12,7 +13,16 @@ export function QuizPopup({ handlePopup }) {
         option2: '',
         option3: ''
     });
-
+    const [optionsTxt, setOptionsTxt] = useState({
+        option1: '',
+        option2: '',
+        option3: ''
+    });
+    const [optionsImage, setOptionsImage] = useState({
+        option1: '',
+        option2: '',
+        option3: ''
+    });
     const addNewPage = () => {
         if (pages.length >= 5) {
             alert("Maximum of 5 pages allowed");
@@ -54,17 +64,35 @@ export function QuizPopup({ handlePopup }) {
             [e.target.name]: e.target.value
         });
     };
-
-    const handleFormSubmit = (e) => {
-            e.preventDefault();
-    try{
-        console.log("Submit button clicked"); 
-        console.log(selectedAnswer, options, quizName);
-        alert('Form sumitted')
-    }catch(error){
-            console.log(error.message)
+    const handleOptionsText = (e) => {
+        setOptionsTxt({
+            ...optionsTxt,
+            [e.target.name]: e.target.value
+        });
     };
-}
+    const handleOptionChangeImage = (e) => {
+        setOptionsImage({
+            ...optionsImage,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const handleFormSubmit =async (e) => {
+        e.preventDefault();
+        try {
+            
+            console.log(selectedAnswer, options, question, optionsImage, optionsTxt);
+            const response = await quizData({question,selectedAnswer, options, optionsImage, optionsTxt})
+            if (response.status === 201) {
+                toast.success("Quiz created successfully");
+             } else {
+                 toast.error("Something went wrong try again")
+                 setError("An error occurred during sign-up.");
+             }
+        } catch (error) {
+            console.log(error.message)
+        };
+    }
     return (
         <>
             <div className="quiz-popup-container">
@@ -94,7 +122,7 @@ export function QuizPopup({ handlePopup }) {
                             <input
                                 type="text"
                                 className="ques-field"
-                                onChange={(e) => setQuizName(e.target.value)}
+                                onChange={(e) => setQuestion(e.target.value)}
                                 placeholder="Poll Question"
                             />
                             <div className='radio'>
@@ -129,8 +157,7 @@ export function QuizPopup({ handlePopup }) {
                                 />
                                 <label htmlFor="Image-and-URL">Text & Image URL</label>
                             </div>
-                        
-                            <div className='input-field'>
+                            {selectedOptionType === 'Text' && <div className='input-field'>
                                 <div>
                                     <input
                                         type="radio"
@@ -185,7 +212,145 @@ export function QuizPopup({ handlePopup }) {
                                         />
                                     </label>
                                 </div>
-                            </div>
+                            </div>}
+
+                            {selectedOptionType === 'Image-URL' && <div className='input-field'>
+                                <div>
+                                    <input
+                                        type="radio"
+                                        name="option1"
+                                        value="option1"
+                                        checked={selectedAnswer === 'option1'}
+                                        onChange={handleAnswerSelection}
+                                    />
+                                    <label>
+                                        <input
+                                            type="text"
+                                            name="option1"
+                                            value={options.option1}
+                                            onChange={handleOptionChange}
+                                            placeholder="Past the image url"
+                                        />
+                                    </label>
+                                </div>
+                                <div>
+                                    <input
+                                        type="radio"
+                                        name="option2"
+                                        value="option2"
+                                        checked={selectedAnswer === 'option2'}
+                                        onChange={handleAnswerSelection}
+                                    />
+                                    <label>
+                                        <input
+                                            type="text"
+                                            name="option2"
+                                            value={options.option2}
+                                            onChange={handleOptionChange}
+                                            placeholder="Past the image url"
+                                        />
+                                    </label>
+                                </div>
+                                <div>
+                                    <input
+                                        type="radio"
+                                        name="option3"
+                                        value="option3"
+                                        checked={selectedAnswer === 'option3'}
+                                        onChange={handleAnswerSelection}
+                                    />
+                                    <label>
+                                        <input
+                                            type="text"
+                                            name="option3"
+                                            value={options.option3}
+                                            onChange={handleOptionChange}
+                                            placeholder="Past the image url"
+                                        />
+                                    </label>
+                                </div>
+                            </div>}
+                            {selectedOptionType === 'Image-and-URL' && (
+                                <div className='input-field-image'>
+                                    <div>
+                                        <input
+                                            type="radio"
+                                            name="selectedAnswer"
+                                            value="option1"
+                                            checked={selectedAnswer === 'option1'}
+                                            onChange={handleAnswerSelection}
+                                        />
+                                        <label>
+                                            <input
+                                                type="text"
+                                                name="option1"
+                                                value={optionsTxt.option1}
+                                                onChange={handleOptionsText}
+                                                placeholder="Enter text for option 1"
+                                            />
+                                            <input
+                                                type="text"
+                                                name="option1"
+                                                value={optionsImage.option1}
+                                                onChange={handleOptionChangeImage}
+                                                placeholder="Paste image URL for option 1"
+                                            />
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <input
+                                            type="radio"
+                                            name="selectedAnswer"
+                                            value="option2"
+                                            checked={selectedAnswer === 'option2'}
+                                            onChange={handleAnswerSelection}
+                                        />
+                                        <label>
+                                            <input
+                                                type="text"
+                                                name="option2"
+                                                value={optionsTxt.option2}
+                                                onChange={handleOptionsText}
+                                                placeholder="Enter text for option 2"
+                                            />
+                                            <input
+                                                type="text"
+                                                name="option2"
+                                                value={optionsImage.option2}
+                                                onChange={handleOptionChangeImage}
+                                                placeholder="Paste image URL for option 2"
+                                            />
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <input
+                                            type="radio"
+                                            name="selectedAnswer"
+                                            value="option3"
+                                            checked={selectedAnswer === 'option3'}
+                                            onChange={handleAnswerSelection}
+                                        />
+                                        <label>
+                                            <input
+                                                type="text"
+                                                name="option3"
+                                                value={optionsTxt.option3}
+                                                onChange={handleOptionsText}
+                                                placeholder="Enter text for option 3"
+                                            />
+                                            <input
+                                                type="text"
+                                                name="option3"
+                                                value={optionsImage.option3}
+                                                onChange={handleOptionChangeImage}
+                                                placeholder="Paste image URL for option 3"
+                                            />
+                                        </label>
+                                    </div>
+                                </div>
+                            )}
+
+
                             <div className='action-button'>
                                 <button type="button" onClick={handlePopup}>Close</button>
                                 <button type="submit">Submit</button>
