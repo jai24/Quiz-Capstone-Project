@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import '../Pages/Css/Popup.css';
 import { quizData } from '../services/quizData';
 
+import { toast } from 'react-hot-toast';  // or other notification library
+
 export function QuizPopup({ handlePopup, quizType }) {
     const [pages, setPages] = useState([{ id: 1 }]);
     const [question, setQuestion] = useState('');
@@ -77,22 +79,39 @@ export function QuizPopup({ handlePopup, quizType }) {
         });
     };
 
-    const handleFormSubmit =async (e) => {
+    // const handleFormSubmit =async (e) => {
+    //     e.preventDefault();
+    //     try {
+            
+    //         console.log(selectedAnswer, options, question, optionsImage, optionsTxt);
+    //         const response = await quizData({question,selectedAnswer, options, optionsImage, optionsTxt})
+    //         if (response.status === 201) {
+    //             toast.success("Quiz created successfully");
+    //          } else {
+    //              toast.error("Something went wrong try again")
+    //              setError("An error occurred during sign-up.");
+    //          }
+    //     } catch (error) {
+    //         console.log(error.message)
+    //     };
+    // }
+    const handleFormSubmit = async (e) => {
         e.preventDefault();
         try {
+            console.log(question, selectedAnswer, options, optionsImage, optionsTxt);
+            const response = await quizData({ question, selectedAnswer, options, optionsImage, optionsTxt });
             
-            console.log(selectedAnswer, options, question, optionsImage, optionsTxt);
-            const response = await quizData({question,selectedAnswer, options, optionsImage, optionsTxt})
             if (response.status === 201) {
                 toast.success("Quiz created successfully");
-             } else {
-                 toast.error("Something went wrong try again")
-                 setError("An error occurred during sign-up.");
-             }
+            } else {
+                toast.error("Something went wrong, try again");
+            }
         } catch (error) {
-            console.log(error.message)
-        };
-    }
+            toast.error("Failed to create quiz");
+            console.log(error.message);
+        }
+    };
+    
     return (
         <>
             <div className="quiz-popup-container">

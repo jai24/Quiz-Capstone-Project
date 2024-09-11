@@ -2,10 +2,10 @@ const mongoose = require('mongoose')
 
 const quizData = new mongoose.Schema({
     question: {
-        type: Object,
+        type: String,
         required: true
     },
-    selectedAnswet: {
+    selectedAnswer: {
         type: String,
         required: true
     },
